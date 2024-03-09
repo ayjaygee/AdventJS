@@ -1,5 +1,18 @@
 const { readFromFile } = require("../../utils");
 
+/** 
+ * Puzzle input is a string of parentheses that give instructions on which stairs Santa should take
+ * a "(" indicates to go up a floor
+ * a ")" indicates to go down a floor
+ * Santa starts at floor 0
+ *  
+ * Part 1 - What floor will Santa finish on?
+ * 
+ * Part 2 - What is the first instruction that will send Santa below the starting floor?
+ *          - Instructions are 1 indexed
+ */
+
+
 function part1(input) {
   return input
     .split("")
