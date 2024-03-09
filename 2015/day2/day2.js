@@ -18,6 +18,11 @@ const { readFromFile } = require("../../utils");
  *
  * All numbers in the elves' list are in feet.
  * How many total square feet of wrapping paper should they order?
+ * 
+ * Part 2:
+ * Need to order ribbon too
+ * The required feet of ribbon is equal to the shortest perimeter of any one face
+ * Add the cubic feet volume of each box to allow for the bows
  */
 
 function part1(input) {
@@ -31,7 +36,21 @@ function part1(input) {
   return output
 }
 
+function part2(input) {
+    const data = input.split("\n");
+    let output = 0;
+    for (i in data) {
+        const [a, b, c] = data[i].split("x").sort((a,b) => a-b);
+        const volume = a*b*c
+       output += volume + 2*a + 2*b
+    }
+    return output
+}
+
 const filename = process.argv[2];
 readFromFile(filename, (fileData) => {
-  console.log(part1(fileData));
+    console.log("Test 1 - Should be 58:", part1("2x3x4"));
+  console.log("Part 1:", part1(fileData));
+  console.log("Test 2 - Should be 34:", part2("2x3x4"));
+  console.log("Part 2:", part2(fileData));
 });
