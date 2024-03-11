@@ -19,6 +19,23 @@ const { readFromFile } = require("../../utils");
  * dvszwmarrgswjxmb is naughty because it contains only one vowel.
  *
  * How many strings are nice?
+ *
+ * --- Part Two ---
+ * Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. None of the old rules apply, as they are all clearly ridiculous.
+ *
+ * Now, a nice string is one with all of the following properties:
+ *
+ * It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
+ * It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+ * For example:
+ *
+ * qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj) and a letter that repeats with exactly one letter between them (zxz).
+ * xxyxx is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.
+ * uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat with a single letter between them.
+ * ieodomkazucvgmuy is naughty because it has a repeating letter with one between (odo), but no pair that appears twice.
+ *
+ * How many strings are nice under these new rules?
+ *
  */
 
 function hasDoubleLetter(key) {
@@ -61,6 +78,25 @@ function getCharacterMap(input) {
   return { singles, pairs };
 }
 
+function hasRepeatingPair(pairs) {
+  for (let key in pairs) {
+    if (pairs[key].length < 2) continue;
+    if (key[0] != key[1] && pairs[key].length > 1) return true;
+    if (pairs[key].some((index) => index - pairs[key][0] > 1)) return true;
+  }
+  return false;
+}
+
+function hasIndexSeparatedRepeat(singles) {
+  for (let key in singles) {
+    if (singles[key].length < 2) continue;
+    for (let i = 0; i < singles[key].length - 1; i++) {
+      if (singles[key][i + 1] - singles[key][i] == 2) return true;
+    }
+  }
+  return false;
+}
+
 function part1(input) {
   let counter = 0;
   for (let line of input.split("\n")) {
@@ -69,8 +105,23 @@ function part1(input) {
     if (countVowels(singles) < 3) continue;
     if (!hasDoubleLetter(pairs)) continue;
     if (hasForbiddenLetters(pairs)) continue;
+
     counter++;
   }
+  return counter;
+}
+
+function part2(input) {
+  let counter = 0;
+  for (let line of input.split("\n")) {
+    const { singles, pairs } = getCharacterMap(line);
+
+    if (!hasRepeatingPair(pairs)) continue;
+    if (!hasIndexSeparatedRepeat(singles)) continue;
+
+    counter++;
+  }
+
   return counter;
 }
 
@@ -93,4 +144,14 @@ readFromFile(filename, (fileData) => {
     part1("dvszwarrgswjxmb")
   );
   console.log("Part 1:", part1(fileData));
+  console.log(
+    "\nPart 2 Test - Follows new rules - Should be 1:",
+    part2("qjhvhtzxzqqjkmpb")
+  );
+  console.log("Part 2 Test - Follows new rules - Should be 1:", part2("xxyxx"));
+  console.log(
+    "Part 2 Test - Fails the repeat letter rule - Should be 0:",
+    part2("uurxcstgmygtbstg")
+  );
+  console.log("Part 2:", part2(fileData));
 });
